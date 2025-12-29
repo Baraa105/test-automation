@@ -283,9 +283,6 @@
     <Compile Include="include\ml\lin_reg\fixed.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="include\ml\lin_reg\stub.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="include\ml\types.h">
       <SubType>compile</SubType>
     </Compile>
