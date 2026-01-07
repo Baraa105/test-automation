@@ -138,6 +138,8 @@ int main()
     // Initialize the TMP36 temperature sensor.
     tempsensor::Tmp36 tempSensor{tempSensorPin, adc};
 
+    // tempsensor::Smart tempSensor{tempSensorPin, adc, linReg};
+
     //! @todo Replace the TMP36 temperature sensor with a smart sensor.
 
     // Initialize the logic implementation with the given hardware.
