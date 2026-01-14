@@ -2,6 +2,7 @@
  * @brief Unit tests for the Atmega328p GPIO driver.
  */
 #include <cstdint>
+#include <cstdio>
 
 #include <gtest/gtest.h>
 
@@ -88,6 +89,9 @@ void runOutputTest(const std::uint8_t id, GpioRegs& regs) noexcept
     {
         // Create a new GPIO output.
         gpio::Atmega328p gpio{id, gpio::Direction::Output};
+
+        // Vi kollar pin-numret, ser vi något som är konstigt/suspekt?
+        std::printf("Pin number: %u, ATmega number: %u\n", pin, id);
 
         // Expect the instance to be initialized correctly if the pin is valid.
         const bool pinValid{isPinValid(id)};
