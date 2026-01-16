@@ -1,6 +1,7 @@
 # L05 - Komponenttester (del I)
 
 ## Dagordning
+* Slutförande av unit-tester för timer-drivern.
 * Introduktion till komponenttester och skillnaden mot unittester.
 * Inspektion av befintliga stub-implementationer.
 * Demonstration: Skapande av en stub-klass för GPIO-drivern.
