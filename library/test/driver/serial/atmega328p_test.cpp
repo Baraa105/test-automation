@@ -90,15 +90,16 @@ void readDataRegThread(const std::string& msg, const bool& stop) noexcept
         while (utils::read(UCSR0A, UDRE0) && !stop) { delay_us(TransmissionDelay_us); }
 
         // If stop flag is set, break out of the loop.
-       // if (stop) { 
-    //        break;
-     //   }
+        if (stop) { 
+            break;
+        }
 
         // Read the character from UDR0 and verify it matches the expected character.
-       // uint8_t receivedChar = UDR0;
+        uint8_t receivedChar = UDR0;
+        EXPECT_EQ(static_cast<char>(receivedChar), c);
 
         // Set UDRE0 to signal that the data has been read and the register is empty.
-       // utils::set(UCSR0A, UDRE0);
+        utils::set(UCSR0A, UDRE0);
        
     }
 }
@@ -118,7 +119,7 @@ TEST(Serial_Atmega328p, Initialization)
     EXPECT_TRUE(serial.isInitialized());
 
     //! - Verify that the driver can be enabled/disabled.
-    serial.setEnabled(ture); 
+    serial.setEnabled(true); 
     EXPECT_TRUE(serial.isEnabled());
 
     serial.setEnabled(false);
