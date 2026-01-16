@@ -24,7 +24,7 @@ public:
     /**
      * @brief Constructor.
      *
-     * @param[in] timeout_ms The timeout in milliseconds.
+     * @param[in] timeout_ms The timeout in milliseconds. Must be greater than 0.
      * @param[in] callback Callback to invoke on timeout (default = none).
      * @param[in] startTimer Start the timer immediately (default = false).
      */
@@ -40,7 +40,7 @@ public:
      * @brief Check if the timer is initialized.
      * 
      *        An uninitialized timer indicates that no timer circuit was available when the 
-     *        timer was created.
+     *        timer was created, or that the given timeout was invalid.
      * 
      * @return True if the timer is initialized, false otherwise.
      */
@@ -70,7 +70,7 @@ public:
     /**
      * @brief Set timeout of the timer.
      * 
-     * @param[in] timeout_ms The new timeout in milliseconds.
+     * @param[in] timeout_ms The new timeout in milliseconds. Must be greater than 0.
      */
     void setTimeout_ms(uint32_t timeout_ms) noexcept override;
 

@@ -68,5 +68,6 @@ make
 * Några övriga synpunkter på lektionen?
 
 ## Nästa lektion
+* Slutförande av unit-tester för timer-drivern.
 * Introduktion till komponenttester.
 * Skapande av stubklasser för att testa högre komponenter i isolering.
