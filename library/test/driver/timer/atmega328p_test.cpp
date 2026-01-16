@@ -11,8 +11,6 @@
 
 #ifdef TESTSUITE
 
-//! @todo Remove this #ifdef in lecture 4 to enable these tests.
-#ifdef LECTURE4
 
 //! @todo Implement tests according to project requirements.
 namespace driver
@@ -53,11 +51,26 @@ constexpr std::uint32_t getMaxCount(const std::uint32_t timeout_ms) noexcept
  */
 TEST(Timer_Atmega328p, Initialization)
 {
+{
     // Case 1 - Verify that only MaxTimerCount (3) timers can be used simultaneously due to 
     //          hardware limitations.
+
     {
         //! @todo Test timer initialization:
-            // Create MaxTimerCount timers with different timeouts.
+        // create 3 timers eith arbitrary timeouts.
+            timer::Atmega328p timer0{100U};
+            timer::Atmega328p timer1{50U};
+            timer::Atmega328p timer2{25U};
+
+            // VERIFY THAT EACH TIMER IS INITIALIZED, SINCE THE ATMEGA328P HAS 3 HARDWARE TIMERS. 
+            EXPECT_TRUE(timer0.isInitialized());
+            EXPECT_TRUE(timer1.isInitialized());
+            EXPECT_TRUE(timer2.isInitialized());
+            
+            timer::Atmega328p timer3{10U};
+            EXPECT_FALSE(timer3.isInitialized()); // VERIFY THAT THE ADDITIONAL TIMER ISN'T INITIALIZED.
+    }
+
             // Verify that each timer is initialized.
             // Create one additional timer.
             // Verify that the additional timer isn't initialized, since no circuits are available.
@@ -67,9 +80,14 @@ TEST(Timer_Atmega328p, Initialization)
     {
         // Create a timer with a 100 ms timeout.
         // Verify that the timer is initialized.
+        timer::Atmega328p timer{100U};
+        EXPECT_TRUE(timer.isInitialized());
 
         //  Create a timer with a 0 ms timeout.
         // Verify that the timer isn't initialized (0 ms is an invalid timeout).
+        timer::Atmega328p timer1{0U};
+        EXPECT_FALSE(timer1.isInitialized());
+
     }
 }
 
@@ -159,7 +177,6 @@ TEST(Timer_Atmega328p, Restart)
 } // namespace
 } // namespace driver
 
-//! @todo Remove this #endif in lecture 4 to enable these tests.
-#endif /** LECTURE4 */
+
 
 #endif /** TESTSUITE */
