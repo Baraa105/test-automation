@@ -93,6 +93,7 @@ Atmega328p::Atmega328p(const uint32_t timeout_ms, void (*callback)(),
     : myHw{(0U < timeout_ms) ? Hardware::reserve() : nullptr}
 	, myMaxCount{maxCount(timeout_ms)}
 	, myEnabled{false}
+
 {
     if (nullptr == myHw) { return; }
 	myTimers[myHw->index] = this;

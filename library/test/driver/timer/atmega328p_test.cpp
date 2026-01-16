@@ -11,7 +11,6 @@
 
 #ifdef TESTSUITE
 
-//! @todo Implement tests according to project requirements.
 namespace driver
 {
 namespace
@@ -50,8 +49,10 @@ constexpr std::uint32_t getMaxCount(const std::uint32_t timeout_ms) noexcept
  */
 TEST(Timer_Atmega328p, Initialization)
 {
+{
     // Case 1 - Verify that only MaxTimerCount (3) timers can be used simultaneously due to 
     //          hardware limitations.
+
     {
         // Create three timers with arbitrary timeouts.
         timer::Atmega328p timer0{100U};
