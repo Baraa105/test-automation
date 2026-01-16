@@ -90,15 +90,15 @@ void readDataRegThread(const std::string& msg, const bool& stop) noexcept
         while (utils::read(UCSR0A, UDRE0) && !stop) { delay_us(TransmissionDelay_us); }
 
         // If stop flag is set, break out of the loop.
-        if (stop) { 
-            break;
-        }
+       // if (stop) { 
+    //        break;
+     //   }
 
         // Read the character from UDR0 and verify it matches the expected character.
-        uint8_t receivedChar = UDR0;
+       // uint8_t receivedChar = UDR0;
 
         // Set UDRE0 to signal that the data has been read and the register is empty.
-        utils::set(UCSR0A, UDRE0);
+       // utils::set(UCSR0A, UDRE0);
        
     }
 }
@@ -110,10 +110,23 @@ void readDataRegThread(const std::string& msg, const bool& stop) noexcept
  */
 TEST(Serial_Atmega328p, Initialization)
 {
-    //! @todo Test serial initialization:
-        //! - Verify that isInitialized() returns true.
-        //! - Verify that the driver can be enabled/disabled.
-        //! - Check that baud rate can be read.
+    // create serial instance.
+    serial::Interface& serial{initSerial()};
+
+    // Verify that isInitialized() returns true.
+
+    EXPECT_TRUE(serial.isInitialized());
+
+    //! - Verify that the driver can be enabled/disabled.
+    serial.setEnabled(ture); 
+    EXPECT_TRUE(serial.isEnabled());
+
+    serial.setEnabled(false);
+    EXPECT_FALSE(serial.isEnabled());
+
+    //! - Check that baud rate can be read.
+    constexpr std::uint32_t expectedBaudRate{9600U};
+    EXPECT_EQ(serial.baudRate_bps(), expectedBaudRate);
 }
 
 /**
