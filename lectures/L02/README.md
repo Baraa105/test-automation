@@ -54,4 +54,5 @@ make
 * Några övriga synpunkter på lektionen?
 
 ## Nästa lektion
+* Slutförande av unit-tester för GPIO-drivern.
 * Unittester för en serial-driver.

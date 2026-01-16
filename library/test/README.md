@@ -5,23 +5,7 @@ Dessa tester måste köras i Linux.
 
 ## Förutsättningar
 
-### Installera Google Test
-
-Installera först nödvändiga paket:
-
-```bash
-sudo apt -y update
-sudo apt -y install libgtest-dev libgmock-dev cmake
-```
-
-Kompilera och installera sedan Google Test-biblioteken:
-
-```bash
-cd /usr/src/gtest
-sudo cmake .
-sudo make
-sudo mv lib/*.a /usr/lib
-```
+Installera Google Test såsom beskrivet i [här](../../README.md#installera-google-test).
 
 ## Kompilering samt exekvering av tester
 

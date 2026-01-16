@@ -1,8 +1,8 @@
 # L03 - Unittester (del II)
 
 ## Dagordning
+* Slutförande av unit-tester för GPIO-drivern.
 * Skapande av unittester för en serial-driver.
-* Användning av trådar för att simulera samtidig hårdvaruaktivitet.
 * Korrigering av eventuella buggar.
 
 ## Mål med lektionen
@@ -66,4 +66,5 @@ make
 * Några övriga synpunkter på lektionen?
 
 ## Nästa lektion
+* Slutförande av unit-tester för serial-drivern.
 * Unittester för en timer-driver.

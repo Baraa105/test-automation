@@ -31,7 +31,9 @@ public:
         , myMaxVal{static_cast<uint16_t>(pow(2U, resolution) - 1U)}
         , myAdcVal{}
         , myResolution{resolution}
+        , myInitialized{true}
         , myEnabled{true}
+        , myChannelValid{true}
     {}
 
     /**
@@ -82,7 +84,8 @@ public:
      */
     double dutyCycle(const uint8_t channel) const noexcept override 
     { 
-        return read(channel) / myMaxVal;
+        // Enforce floating-point division.
+        return read(channel) / static_cast<double>(myMaxVal);
     }
 
     /**
@@ -102,7 +105,7 @@ public:
      * 
      * @return True if the ADC is initialized, false otherwise.
      */
-    bool isInitialized() const noexcept override { return true; }
+    bool isInitialized() const noexcept override { return myInitialized; }
 
     /**
      * @brief Indicate whether the ADC is enabled.
@@ -112,9 +115,9 @@ public:
     bool isEnabled() const noexcept override { return myEnabled; }
 
     /**
-     * @brief Set enablement of ADC.
+     * @brief Set enablement status of the ADC.
      * 
-     * @param[in] enable Indicate whether to enable the ADC.
+     * @param[in] enable True to enable the ADC.
      */
     void setEnabled(const bool enable) noexcept override { myEnabled = enable; }
 
@@ -125,9 +128,37 @@ public:
      * 
      * @return True if the channel is valid, false otherwise.
      */
-    bool isChannelValid(const uint8_t channel) const noexcept override { return true; }
+    bool isChannelValid(const uint8_t channel) const noexcept override 
+    { 
+        (void) (channel);
+        return myChannelValid; 
+    }
 
-    Stub()                       = delete; // No default constructor.
+    /**
+     * @brief Set channel validity for all channels.
+     * 
+     * @param[in] valid True to validate all channels, false otherwise.
+     */
+    void setChannelValidity(const bool valid) noexcept { myChannelValid = valid; }
+
+    /**
+     * @brief Set the ADC value (virtual input).
+     * 
+     * @param[in] value ADC value.
+     */
+    void setValue(const uint16_t value) noexcept
+    {
+        // Set the ADC value if valid.
+        if (myMaxVal >= value) { myAdcVal = value; }
+    }
+
+    /**
+     * @brief Set initialization status of the ADC.
+     * 
+     * @param[in] initialized True to indicate that the ADC is initialized.
+     */
+    void setInitialized(const bool initialized) noexcept { myInitialized = initialized; }
+
     Stub(const Stub&)            = delete; // No copy constructor.
     Stub(Stub&&)                 = delete; // No move constructor.
     Stub& operator=(const Stub&) = delete; // No copy assignment.
@@ -144,10 +175,16 @@ private:
     uint16_t myAdcVal;
 
     /** ADC resolution. */
-    const uint8_t resolution;
+    const uint8_t myResolution;
+
+    /** Indicate whether the ADC is initialized. */
+    bool myInitialized;
 
     /** Indicate whether the ADC is enabled. */
     bool myEnabled;
+
+    /** Channel validity (all channels). */
+    bool myChannelValid;
 };
 } // namespace adc
 } // namespace driver

@@ -41,11 +41,29 @@ Först gången kommer du ombeds att lägga till användarnamn och lösenord, vil
 * Välj ett kort användarnamn, så som ditt förnamn.
 * Välj ett lämpligt lösenord och se till att spara detta på lämpligt sätt.
 
-Ladda ned nödvändiga paket för att kompilera kod, använda Git med mera:
+Installera nödvändiga paket för att kompilera kod, använda Git med mera:
 
 ```bash
 sudo apt -y update
-sudo apt -y install build-essential make git
+sudo apt -y install build-essential make git tree
+```
+
+### Installera Google Test
+
+Installera nödvändiga paket för Google Test:
+
+```bash
+sudo apt -y install libgtest-dev libgmock-dev cmake
+```
+
+Kompilera och installera sedan Google Test-biblioteken:
+
+```bash
+cd /usr/src/gtest
+sudo cmake .
+sudo make
+sudo mv lib/*.a /usr/lib
+cd ~
 ```
 
 ### Konfigurera SSH-nycklar för GitHub
@@ -91,7 +109,9 @@ Skapa din egen kopia (fork) av repot på GitHub:
 3. Välj ditt eget konto som destination.
 4. Klicka på **Create fork**.
 
-Nu har du en egen kopia av repot på ditt GitHub-konto där du kan göra ändringar.
+Nu har du en egen kopia av repot på ditt GitHub-konto där du kan göra ändringar. Du kan också
+synkronisera ditt forkade repos main-branch med kursrepots motsvarighet. Instruktioner gällande
+synkronisering av andra brancher finns [här](#synka-icke-main-branches-från-kursrepot).
 
 ### Klona ditt forkade repo lokalt
 
@@ -105,13 +125,33 @@ Dirigera in i repot och lista eventuella filer via följande kommandon:
 
 ```bash
 cd test-automation/
-ls
+tree
 ```
 
 Öppna repot med Visual Studio Code:
 
 ```bash
 code .
+```
+
+Om du inte kan öppna Visual Studio Code med felmeddelande `Exec format error code`, öpppna filen `/etc/wsl.conf` som root user:
+
+```bash
+sudo nano /etc/wsl.conf
+```
+
+Kommentera ut `systemd=true` såsom visas nedan:
+
+```bash
+[boot]
+#systemd=true
+```
+
+Öppna Powershell och starta om WSL:
+
+```bash
+wsl.exe --shutdown
+powershell.exe
 ```
 
 ### Verifiera installationen
@@ -141,9 +181,9 @@ Det som görs ovan är att du:
 * Skapar en commit med ett beskrivande meddelande.
 * Pushar ändringarna till ditt forkade repo på GitHub.
 
-### Hämta uppdateringar från original-repot (valfritt)
+### Hämta uppdateringar från kursrepot (valfritt)
 
-Om läraren gör uppdateringar i original-repot kan du hämta dem:
+Om läraren gör uppdateringar i kursrepot kan du hämta dem:
 
 ```bash
 git remote add upstream git@github.com:Yrgo-24/test-automation.git
@@ -151,7 +191,7 @@ git fetch upstream
 git merge upstream/main
 ```
 
-Detta behöver endast göras om du vill synkronisera med ändringar från original-repot.
+Detta behöver endast göras om du vill synkronisera med ändringar från kursrepot.
 
 ### Arbeta med branches (valfritt)
 
@@ -179,3 +219,34 @@ När du pushar en ny branch till GitHub:
 ```bash
 git push -u origin branch-namn
 ```
+
+### Synka icke-main branches från kursrepot
+
+Om det finns fler brancher än `main` i kursrepot och du vill synka dessa till din egen fork:
+
+1. Lägg till kursrepot som remote med namnet `upstream`:
+
+```bash
+git remote add upstream git@github.com:Yrgo-24/test-automation.git
+```
+
+2. Hämta alla branches från kursrepot (dvs. `upstream`):
+
+```bash
+git fetch upstream
+```
+
+3. Skapa och byt till en lokal branch som spårar upstream-branchen du vill synka.  
+**OBS!** Byt ut `<BRANCH_NAME>` mot den branch du vill synka:
+
+```bash
+git checkout -b <BRANCH_NAME> upstream/<BRANCH_NAME>
+```
+
+4. Pusha branchen till din egen fork på GitHub:
+
+```bash
+git push -u origin <BRANCH_NAME>
+```
+
+Nu har du en kopia av den specifika branchen från kursrepot både lokalt och i din egen fork.

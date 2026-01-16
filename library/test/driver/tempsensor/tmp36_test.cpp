@@ -1,14 +1,12 @@
 /**
- * @brief Unit tests for the TMP36 temperature sensor.
+ * @brief Unit tests for the TMP36 temp sensor.
  */
 #include <cstdint>
-#include <limits>
 #include <memory>
 
 #include <gtest/gtest.h>
 
-#include "arch/avr/hw_platform.h"
-#include "driver/adc/atmega328p.h"
+#include "driver/adc/stub.h"
 #include "driver/tempsensor/tmp36.h"
 #include "utils/utils.h"
 
@@ -18,21 +16,6 @@ namespace driver
 {
 namespace
 {
-// -----------------------------------------------------------------------------
-adc::Interface& setupAdc() noexcept
-{
-    // Reset all used ADC registers.
-    ADMUX  = 0U;
-    ADCSRA = 0U;
-    ADC    = 0U;
-
-    // Set the ADC interrupt flag so that we don't get stuck in the read loop.
-    utils::set(ADCSRA, ADIF);
-
-    // Return a reference to the singleton ADC instance.
-    return adc::Atmega328p::getInstance();
-}
-
 // -----------------------------------------------------------------------------
 constexpr double computeInputVoltage(const std::uint16_t adcVal) noexcept
 {
@@ -60,45 +43,57 @@ constexpr std::int16_t convertToTemp(const std::uint16_t adcVal) noexcept
 /**
  * @brief Temp sensor initialization test.
  * 
- *        Verify that invalid pin numbers are not accepted and the sensor is not initialized 
- *        for out-of-range values.
+ *        Verify that the sensor isn't initialized if:
+ *            - The ADC isn't initialized.
+ *            - The temp sensor pin number (the ADC channel) is invalid.
  */
 TEST(TempSensor_Tmp36, Initialization)
 {
-    constexpr std::int16_t defaultTemp{0U};
     constexpr std::uint16_t adcVal{100U};
+    constexpr std::int16_t defaultTemp{0U};
+    constexpr std::int16_t expectedTemp{convertToTemp(adcVal)};
 
     // Set up the ADC.
-    adc::Interface& adc{setupAdc()};
-    ADC = adcVal;
+    adc::Stub adc{};
+    adc.setValue(adcVal);
 
-     // Expect that the ADC was initialized successfully.
-    EXPECT_TRUE(adc.isInitialized());
-
-    // Try all pin numbers 0 - 255.
-    for (std::size_t i{}; i <= std::numeric_limits<std::uint8_t>::max(); ++i)
+     // Case 1 - Simulate a valid pin.
     {
-        // Create a TMP36 sensor instance for this pin.
-        const std::uint8_t pin{static_cast<std::uint8_t>(i)};
+        // Create a temp sensor instance for this pin.
+        constexpr std::uint8_t pin{0U};
+        adc.setChannelValidity(true);
+        adc.setInitialized(true);
+        tempsensor::Tmp36 tempSensor{pin, adc};
+        
+        // For valid pins, the sensor should be initialized and return the expected temperature.
+        EXPECT_TRUE(tempSensor.isInitialized());
+        EXPECT_EQ(tempSensor.read(), expectedTemp);
+    }
+
+    // Case 2 - Simulate an invalid pin.
+    {
+        // Create a temp sensor instance for this pin.
+        constexpr std::uint8_t pin{10U};
+        adc.setChannelValidity(false);
+        adc.setInitialized(true);
         tempsensor::Tmp36 tempSensor{pin, adc};
 
-        // Check if the pin is within the valid range for the ADC.
-        const bool isValid{adc.isChannelValid(pin)};
+        // Expect the temp sensor to not be initialized and to return the default temperature.
+        EXPECT_FALSE(tempSensor.isInitialized());
+        EXPECT_EQ(tempSensor.read(), defaultTemp);
+    }
 
-        if (isValid)
-        {
-            // For valid pins, the sensor should be initialized and return the expected temperature.
-            const std::int16_t expectedTemp{convertToTemp(adcVal)};
-            EXPECT_TRUE(tempSensor.isInitialized());
-            EXPECT_EQ(tempSensor.read(), expectedTemp);
-        }
-        else
-        {
-            // For invalid pins, the sensor should not be initialized and should return the 
-            // default temperature.
-            EXPECT_FALSE(tempSensor.isInitialized());
-            EXPECT_EQ(tempSensor.read(), defaultTemp);
-        }
+    // Case 3 - Simulate that the ADC isn't initialized.
+    {
+        // Create a temp sensor instance.
+        constexpr std::uint8_t pin{0U};
+        adc.setChannelValidity(true);
+        adc.setInitialized(false);
+        tempsensor::Tmp36 tempSensor{pin, adc};
+
+        // Expect the temp sensor to not be initialized and to return the default temperature.
+        EXPECT_FALSE(tempSensor.isInitialized());
+        EXPECT_EQ(tempSensor.read(), defaultTemp);
     }
 }
 
@@ -110,32 +105,27 @@ TEST(TempSensor_Tmp36, Initialization)
 TEST(TempSensor_Tmp36, Accuracy)
 {
     constexpr std::uint8_t tempSensorPin{0U};
+    constexpr std::uint16_t adcMax{1000U};
     constexpr std::size_t stepVal{10U};
 
     // Set up the ADC.
-    adc::Interface& adc{setupAdc()};
-
-    // Expect that the ADC was initialized successfully and that the sensor pin is within the 
-    // valid range for the ADC.
-    EXPECT_TRUE(adc.isInitialized());
-    EXPECT_TRUE(adc.isChannelValid(tempSensorPin));
+    adc::Stub adc{};
     
-    // Set up the temperature sensor, use the interface this time.
+    // Set up the temp sensor, use the interface this time.
     std::unique_ptr<tempsensor::Interface> tempSensor{
         std::make_unique<tempsensor::Tmp36>(tempSensorPin, adc)};
 
-    // Expect the temperature sensor to be initialized successfully.
+    // Expect the temp sensor to be initialized successfully.
     EXPECT_TRUE(tempSensor->isInitialized());
 
     // Try different ADC values to simulate different input voltages.
-    for (std::size_t i{}; i <= std::numeric_limits<std::uint16_t>::max(); i += stepVal)
+    for (std::uint16_t adcVal{}; adcVal <= adcMax; adcVal += stepVal)
     {
         // Calculate the expected temperature for this ADC value.
-        const std::uint16_t adcVal{static_cast<std::uint16_t>(i)};
         const std::int16_t expectedTemp{convertToTemp(adcVal)};
 
         // Set the ADC register to simulate the sensor reading.
-        ADC = adcVal;
+        adc.setValue(adcVal);
 
         // The sensor should return the expected temperature for this ADC value.
         EXPECT_EQ(tempSensor->read(), expectedTemp);

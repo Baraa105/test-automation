@@ -9,7 +9,7 @@
 * Känna till varför det är önskvärt att automatisera tester.
 * Känna till skillnaden mellan unit-, komponent- och integrationstester.
 * Förstå grunderna i Google Test-ramverket.
-* Se exempel på implementation och testning av en smart temperatursensor.
+* Se exempel på implementation av en smart temperatursensor.
 
 ## Instruktioner
 
@@ -26,9 +26,13 @@ cd library/test
 make
 ```
 
+### Skriva tester
+* Öppna testfilen [smart_test.cpp](../../library/test/driver/tempsensor/smart_test.cpp).
+* Ta bort `#ifdef LECTURE1` (rad 16) samt motsvarande `#endif` (rad 196) för att aktivera testerna.
+* Implementera testfallen enligt kommentarerna i filen.
+
 ### Demonstration
 * En smart temperatursensor implementeras i helklass.
-* Tester skrivs för en linjär regressionsalgoritm i helklass.
 * Ni får möjlighet att skriva unittester för den smarta temperatursensorn.
 
 ## Utvärdering
