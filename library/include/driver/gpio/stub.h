@@ -141,7 +141,21 @@ public:
             myInterruptEnabled = false;
         }
     }
-  
+  //** @brief Check whether interrupts are enabled for the GPIO.
+    /**
+     * @return True if interrupts are enabled , false otherwise.
+     */
+    bool isInterruptEnabled() const noexcept 
+    {
+        return myInterruptEnabled; 
+    }
+
+    
+    Stub(const Stub&)            = delete; // No copy constructor.
+    Stub(Stub&&)                 = delete; // No move constructor.
+    Stub& operator=(const Stub&) = delete; // No copy assignment.
+    Stub& operator=(Stub&&)      = delete; // No move assignment.
+
 
 private:
     //** GPIO enablement (true = high, false = low) */
