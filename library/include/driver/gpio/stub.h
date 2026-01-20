@@ -63,34 +63,85 @@ public:
      * 
      * @return True if the input is high, false otherwise.
      */
-     bool read() const noexcept override;
+     bool read() const noexcept override { return myEnabled; }
 
     /**
      * @brief Write output to the GPIO.
      * 
      * @param[in] output The output value to write (true = high, false = low).
      */
-     void write(bool output) noexcept override;
+     void write(bool output) noexcept override 
+     
+     {
+        // only update the GPIO enablmenet  state if the device is initialized.
+         if (myInitialized)
+         {
+             myEnabled = output;
+         }
+     }
 
     /**
      * @brief Toggle the output of the GPIO.
      */
-     void toggle() noexcept override;
+     void toggle() noexcept override 
+     { 
+            // only toggle the device if th device is initialized.
+            if (myInitialized)
+            {
+                myEnabled = !myEnabled; 
+            }
+     }
 
     /**
      * @brief Enable/disable pin change interrupt for the GPIO.
      * 
      * @param[in] enable True to enable pin change interrupt for the GPIO, false otherwise.
      */
-     void enableInterrupt(bool enable) noexcept override;
+     void enableInterrupt(bool enable) noexcept override 
+     { 
+        // only update the GPIO interrupt enablement state if the device is initialized.
+        if (myInitialized)
+        {
+            myInterruptEnabled = enable; 
+        }
+     }
 
     /**
      * @brief Enable pin change interrupt for I/O port associated with the GPIO.
      * 
      * @param[in] enable True to enable pin change interrupt for the I/O port, false otherwise.
      */
-     void enableInterruptOnPort(bool enable) noexcept override;
+     void enableInterruptOnPort(bool enable) noexcept override 
+     {
+        // only update the GPIO interrupt enablement state if the device is initialized.
+        if (myInitialized)
+        {
+            myInterruptEnabled = enable; 
+        }
+     }
 
+    /**
+     * @brief set GPIO initialization state.
+     *      
+     *      if the GPIO is set to uninitialized, the enablement state and interrupt state 
+     *      will be reset to default, i.e false. 
+     * 
+     * 
+     * 
+     * @param[in] initialized GPIO initialization state to set (true = initialized).
+     */
+    void setInitialized(bool initialized) noexcept 
+    { 
+        myInitialized = initialized; 
+
+        // reset myEnabled and myInterruptEnabled if the device is uninitialized.
+        if (!myInitialized)
+        {
+            myEnabled = false;
+            myInterruptEnabled = false;
+        }
+    }
+  
 
 private:
     //** GPIO enablement (true = high, false = low) */
