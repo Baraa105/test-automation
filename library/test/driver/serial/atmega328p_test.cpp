@@ -14,9 +14,6 @@
 
 #ifdef TESTSUITE
 
-//! @todo Remove this #ifdef in lecture 3 to enable these tests.
-#ifdef LECTURE3
-
 //! @todo Implement tests according to project requirements.
 namespace driver
 {
@@ -73,11 +70,11 @@ void simulateDataReg(const bool& stop) noexcept
 // -----------------------------------------------------------------------------
 void printThread(serial::Interface& serial, const std::string& msg, bool& stop) noexcept
 {
-    //! @todo Implement this function!
-
-    // Transmit the entire string.
+    // Transmit the entire string, convert to a C string (const char*).
+    serial.printf(msg.c_str());
 
     // Set the stop flag to true to signal that transmission is complete.
+    stop = true;
 }
 
 // -----------------------------------------------------------------------------
@@ -93,13 +90,17 @@ void readDataRegThread(const std::string& msg, const bool& stop) noexcept
         while (utils::read(UCSR0A, UDRE0) && !stop) { delay_us(TransmissionDelay_us); }
 
         // If stop flag is set, break out of the loop.
+        if (stop) { 
+            break;
+        }
 
         // Read the character from UDR0 and verify it matches the expected character.
-        
-        // Set UDRE0 to signal that the data has been read and the register is empty.
+        uint8_t receivedChar = UDR0;
+        EXPECT_EQ(static_cast<char>(receivedChar), c);
 
-        //! @todo Remove this line once the character 'c' is checked.
-        (void) (c);
+        // Set UDRE0 to signal that the data has been read and the register is empty.
+        utils::set(UCSR0A, UDRE0);
+       
     }
 }
 
@@ -110,10 +111,23 @@ void readDataRegThread(const std::string& msg, const bool& stop) noexcept
  */
 TEST(Serial_Atmega328p, Initialization)
 {
-    //! @todo Test serial initialization:
-        //! - Verify that isInitialized() returns true.
-        //! - Verify that the driver can be enabled/disabled.
-        //! - Check that baud rate can be read.
+    // create serial instance.
+    serial::Interface& serial{initSerial()};
+
+    // Verify that isInitialized() returns true.
+
+    EXPECT_TRUE(serial.isInitialized());
+
+    //! - Verify that the driver can be enabled/disabled.
+    serial.setEnabled(true); 
+    EXPECT_TRUE(serial.isEnabled());
+
+    serial.setEnabled(false);
+    EXPECT_FALSE(serial.isEnabled());
+
+    //! - Check that baud rate can be read.
+    constexpr std::uint32_t expectedBaudRate{9600U};
+    EXPECT_EQ(serial.baudRate_bps(), expectedBaudRate);
 }
 
 /**
@@ -147,8 +161,5 @@ TEST(Serial_Atmega328p, Transmit)
 
 } // namespace
 } // namespace driver.
-
-//! @todo Remove this #endif in lecture 3 to enable these tests.
-#endif /** LECTURE3 */
 
 #endif /** TESTSUITE */
