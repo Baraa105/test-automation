@@ -25,11 +25,17 @@ public:
     /** 
      * @brief Constructor.
      */
-        stub() noexcept;
+        stub() noexcept
+        : myEnabled{false}
+        , myInitialized{true}
+        , myInterruptEnabled{false}
+    {}
+
     /** 
      * @brief Destructor.
      */
      ~Stub() noexcept override = default;
+
 
     /**
      * @brief Check whether the GPIO is initialized.
@@ -39,14 +45,18 @@ public:
      * 
      * @return True if the device is initialized, false otherwise.
      */
-     bool isInitialized() const noexcept override;
+     bool isInitialized() const noexcept override { return myInitialized; }
 
     /**
      * @brief Get the data direction of the GPIO.
      * 
      * @return The data direction of the GPIO.
      */
-     Direction direction() const noexcept override;
+     Direction direction() const noexcept override
+    {
+        // the data is irrelevant for the stub, return input. 
+         return Direction::Input; 
+    }
 
     /**
      * @brief Read input of the GPIO.
