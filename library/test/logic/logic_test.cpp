@@ -18,7 +18,7 @@
 #include "logic/stub.h"
 
 //! @todo Remove this #ifdef block once all stubs are implemented!
-#ifdef STUBS_IMPLEMENTED
+
 
 #ifdef TESTSUITE
 
@@ -213,8 +213,13 @@ TEST(Logic, DebounceHandling)
 TEST(Logic, ToggleHandling)
 {
     // Create logic implementation and run the system.
+    mock.createLogic();
+    mock.runSystem();
+
 
     // Expect the toggle timer and the LED to be disabled at the start.
+    EXPECT_FALSE(mock.toggleTimer.isEnabled());¨
+    EXPECT_FALSE(mock.led.isEnabled());
 
     // Case 1 - Press the temperature button, simulate button event.
     // Expect the toggle timer to not be enabled, since the wrong button was pressed.
