@@ -32,7 +32,7 @@ namespace
  * @tparam EepromSize EEPROM size in bytes (default = 1024).
  */
 template <std::uint16_t EepromSize = 1024U>
-struct Mock final
+struct mock final
 {
     // Generate a compiler error if the EEPROM size is set to 0.
     static_assert(0U < EepromSize, "EEPROM size must be greater than 0!");
@@ -73,7 +73,7 @@ struct Mock final
     /** 
      * @brief Constructor.
      */
-    Mock() noexcept
+    mock() noexcept
         : led{}
         , toggleButton{}
         , tempButton{}
@@ -90,7 +90,7 @@ struct Mock final
     /**
      * @brief Destructor.
      */
-    ~Mock() noexcept = default;
+    ~mock() noexcept = default;
 
     /**
      * @brief Create logic implementation.
@@ -123,10 +123,10 @@ struct Mock final
         t2.join();
     }
 
-    Mock(const Mock&)            = delete; // No copy constructor.
-    Mock(Mock&&)                 = delete; // No move constructor.
-    Mock& operator=(const Mock&) = delete; // No copy assignment.
-    Mock& operator=(Mock&&)      = delete; // No move assignment.
+    mock(const mock&)            = delete; // No copy constructor.
+    mock(mock&&)                 = delete; // No move constructor.
+    mock& operator=(const mock&) = delete; // No copy assignment.
+    mock& operator=(mock&&)      = delete; // No move assignment.
 
 private:
     // -----------------------------------------------------------------------------
@@ -154,7 +154,7 @@ private:
 TEST(Logic, DebounceHandling)
 {
     // Create logic implementation and run the system.
-    Mock mock{};
+    mock mock{};
     logic::Interface& logic{mock.createLogic()};
     mock.runSystem();
 
@@ -213,13 +213,15 @@ TEST(Logic, DebounceHandling)
 TEST(Logic, ToggleHandling)
 {
     // Create logic implementation and run the system.
-    mock.createLogic();
+    mock<1024> mock; 
+
+    logic::Interface& logic = mock.createLogic();
     mock.runSystem();
 
 
     // Expect the toggle timer and the LED to be disabled at the start.
-    EXPECT_FALSE(mock.toggleTimer.isEnabled());¨
-    EXPECT_FALSE(mock.led.isEnabled());
+    EXPECT_FALSE(mock.toggleTimer.isEnabled());
+    EXPECT_FALSE(mock.led.read());
 
     // Case 1 - Press the temperature button, simulate button event.
     // Expect the toggle timer to not be enabled, since the wrong button was pressed.
@@ -333,4 +335,4 @@ TEST(Logic, Eeprom)
 #endif /** TESTSUITE */
 
 //! @todo Remove this #endif once all stubs are implemented!
-#endif /** STUBS_IMPLEMENTED */
+ /** STUBS_IMPLEMENTED */

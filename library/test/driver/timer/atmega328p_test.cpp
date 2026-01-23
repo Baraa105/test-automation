@@ -59,23 +59,32 @@ TEST(Timer_Atmega328p, Initialization)
         timer::Atmega328p timer1{50U};
         timer::Atmega328p timer2{25U};
 
-        // Verify that each timer is initialized, since the ATmega328p has three hardware timers.
+        // VERIFY THAT EACH TIMER IS INITIALIZED, SINCE THE ATMEGA328P HAS 3 HARDWARE TIMERS. 
         EXPECT_TRUE(timer0.isInitialized());
         EXPECT_TRUE(timer1.isInitialized());
         EXPECT_TRUE(timer2.isInitialized());
-
-        // Create one additional timer.
-        // Verify that the additional timer isn't initialized, since no circuits are available.
+        
         timer::Atmega328p timer3{10U};
-        EXPECT_FALSE(timer3.isInitialized());
+        EXPECT_FALSE(timer3.isInitialized()); // VERIFY THAT THE ADDITIONAL TIMER ISN'T INITIALIZED.
+    }
+
+            // Verify that each timer is initialized.
+            // Create one additional timer.
+            // Verify that the additional timer isn't initialized, since no circuits are available.
+
     }
 
     // Case 2 - Verify that a timer cannot have a 0 ms timeout.
     {
         // Create a timer with a 100 ms timeout.
         // Verify that the timer is initialized.
+
         timer::Atmega328p timer0{100U};
         EXPECT_TRUE(timer0.isInitialized());
+
+        timer::Atmega328p timer{100U};
+        EXPECT_TRUE(timer.isInitialized());
+
 
         // Create a timer with a 0 ms timeout.
         // Verify that the timer isn't initialized (0 ms is an invalid timeout).
