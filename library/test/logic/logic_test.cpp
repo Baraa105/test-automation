@@ -230,7 +230,10 @@ TEST(Logic, ToggleHandling)
     {
         mock.tempButton.write(true);
         logic.handleButtonEvent();
+
         mock.debounceTimer.setTimedOut(true);
+        logic.handleDebounceTimerTimeout();
+
         mock.tempButton.write(false);
 
         EXPECT_FALSE(mock.toggleTimer.isEnabled()); 
@@ -241,34 +244,74 @@ TEST(Logic, ToggleHandling)
 
     // Case 2 - Press the toggle button, simulate button event.
     // Expect the toggle timer to be enabled.
+     // Don't forget to simulate the debounce timer timeout after the button event.
     {
-        //! @note Don't forget to simulate the debounce timer timeout after the button event.
+        mock.toggleButton.write(true);
+        logic.handleButtonEvent();
+
+        mock.debounceTimer.setTimedOut(true);
+        logic.handleDebounceTimerTimeout();
+
+        mock.toggleButton.write(false);
+
+        EXPECT_TRUE(mock.toggleTimer.isEnabled());  
     }
 
     // Case 3 - Simulate toggle timer timeout, expect the LED to be enabled.
     {
+        mock.toggleTimer.setTimedOut(true);
+        logic.handleToggleTimerTimeout();
+
+        EXPECT_TRUE(mock.led.read());
     }
 
     // Case 4 - Simulate that the toggle timer elapses again, expect the LED to be disabled.
     {
+        mock.toggleTimer.setTimedOut(true);
+        logic.handleToggleTimerTimeout();
+
+        EXPECT_FALSE(mock.led.read());
     }
 
     // Case 5 - Simulate that the toggle timer elapses once more, expect the LED to be enabled.
     {
+        mock.toggleTimer.setTimedOut(true);
+        logic.handleToggleTimerTimeout();
+
+        EXPECT_TRUE(mock.led.read());
     }
 
     // Case 6 - Press the toggle button once more, simulate button event.
     // Expect the toggle timer and LED to be disabled.
+    // Don't forget to simulate the debounce timer timeout after the button event.
     {
-        //! @note Don't forget to simulate the debounce timer timeout after the button event.
+        mock.toggleButton.write(true);
+        logic.handleButtonEvent();
+
+        mock.debounceTimer.setTimedOut(true);
+        logic.handleDebounceTimerTimeout();
+
+        mock.toggleButton.write(false);
+
+        EXPECT_FALSE(mock.toggleTimer.isEnabled());  
+        EXPECT_FALSE(mock.led.read());
+        
     }
 
     // Case 7 - Simulate temperature timer timeout, expect the LED to be unaffected.
     {
+        mock.tempTimer.setTimedOut(true);
+        logic.handleTempTimerTimeout();
+
+        EXPECT_FALSE(mock.led.read());  
     }
 
     // Case 8 - Simulate debounce timer timeout, expect the LED to be unaffected.
     {
+        mock.debounceTimer.setTimedOut(true);
+        logic.handleDebounceTimerTimeout();
+
+        EXPECT_FALSE(mock.led.read());  
     }
 }
 
