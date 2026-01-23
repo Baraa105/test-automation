@@ -223,8 +223,18 @@ TEST(Logic, ToggleHandling)
 
     // Case 1 - Press the temperature button, simulate button event.
     // Expect the toggle timer to not be enabled, since the wrong button was pressed.
+    //Don't forget to simulate the debounce timer timeout after the button event.
+
     {
-        //! @note Don't forget to simulate the debounce timer timeout after the button event.
+        mock.tempButton.write(true);
+        logic.handleButtonEvent();
+        mock.debounceTimer.setTimedOut(true);
+        mock.tempButton.write(false);
+
+        EXPECT_FALSE(mock.toggleTimer.isEnabled()); 
+        
+
+        
     }
 
     // Case 2 - Press the toggle button, simulate button event.
