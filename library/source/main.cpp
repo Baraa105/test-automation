@@ -141,7 +141,7 @@ int main()
     {
         serial.printf("Temperature prediction training succeeded!\n");
     }
-    else { serial.printf("Temperature prediction training failed!\n"; )}
+    else { serial.printf("Temperature prediction training failed!\n"); }
 
     // Initialize the smart temperature sensor.
     tempsensor::Smart tempSensor{tempSensorPin, adc, linReg};

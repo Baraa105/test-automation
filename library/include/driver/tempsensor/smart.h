@@ -74,4 +74,3 @@ private:
 } // namespace tempsensor
 } // namespace driver
 
-
