@@ -102,7 +102,7 @@ bool Logic::readSerialPort() noexcept
                 //! @todo Toggle the LED here.
                 break;
             case 's':
-                //! @todo Print the LED state here!
+                //! @todo Print the state of the toggle timer here!
                 break;
             case 'r':
                 //! @todo Read and print the temperature here!

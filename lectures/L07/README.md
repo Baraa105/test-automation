@@ -2,7 +2,7 @@
 
 ## Dagordning
 * Slutförande av komponenttester för systemlogiken i [logic_test.cpp](../../library/test/logic/logic_test.cpp).
-* Tillägg av minst fem ytterligare komponenttester för att täcka fler scenarion i systemlogiken.
+* Om tid finns: Tillägg av ytterligare komponenttester för att täcka fler scenarion i systemlogiken.
 * Verifiering av att alla krav för komponenttester uppfylls.
 
 ## Mål med lektionen
@@ -11,7 +11,6 @@
 * Kunna använda stubklasser effektivt för att simulera och verifiera hårdvarubeteende.
 * Kunna skriva testfall med tydlig struktur och god täckning av olika scenarion.
 * Identifiera och åtgärda buggar som upptäcks genom testning.
-* **Huvudmål**: Uppfylla alla krav för godkänd komponenttestning och vara redo för SW/HW-integrationstestning.
 
 ## Förutsättningar
 * Genomgång av L05 och L06 där stubklasser utvecklades och komponenttester påbörjades.
@@ -25,15 +24,14 @@ Följande krav ska uppfyllas innan ni går vidare till SW/HW-integrationstestnin
 
 1. **Alla testfall implementerade**: Samtliga testfall i [logic_test.cpp](../../library/test/logic/logic_test.cpp) ska vara implementerade och körbara.
 2. **Alla tester går igenom**: Kör `make` i testmappen och verifiera att alla tester passerar (grönt resultat).
-3. **Minst fem ytterligare testfall**: Utöver de kommenterade testfallen ska minst fem egna testfall ha lagts till som täcker olika scenarion.
-4. **Kodtäckning**: Systemlogiken i [logic.cpp](../../library/source/logic/logic.cpp) ska testas grundligt, inklusive:
+3. **Kodtäckning**: Systemlogiken i [logic.cpp](../../library/source/logic/logic.cpp) ska testas grundligt, inklusive:
    - Alla publika metoder (se [logic.h](../../library/include/logic/logic.h)).
    - Olika kombinationer av knapptryckningar.
    - Alla timer-timeouts.
    - EEPROM-läsning och skrivning.
    - Edge cases och felhantering.
-5. **Dokumentation**: Varje testfall ska ha tydliga kommentarer som förklarar vad som testas och varför.
-6. **Stubklasser kompletta**: Alla nödvändiga stub-metoder ska vara implementerade för att möjliggöra testningen.
+4. **Dokumentation**: Varje testfall ska ha tydliga kommentarer som förklarar vad som testas och varför.
+5. **Stubklasser kompletta**: Alla nödvändiga stub-metoder ska vara implementerade för att möjliggöra testningen.
 
 ## Instruktioner
 
@@ -54,7 +52,7 @@ Målet är att de implementerade testerna ska gå igenom. Om något test misslyc
   * Åtgärda buggen och kör testerna igen för att verifiera att problemet är löst.
 
 ### Lägg till ytterligare tester
-* Lägg till minst fem ytterligare tester, exempelvis:
+* Lägg gärna ytterligare tester, exempelvis:
   * Testa flera knapptryckningar i snabb följd och verifiera debounce-funktionalitet.
   * Testa extrema temperaturvärden (negativa, mycket höga).
   * Simulera timeout för flera timers samtidigt.

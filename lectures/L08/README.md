@@ -14,8 +14,11 @@
 
 ## Förutsättningar
 * Alla komponenttester från L07 ska vara klara och gå igenom.
-* Tillgång till Arduino/ATmega328P med nödvändig hårdvara (knappar, lysdiod, temperatursensor).
+* Tillgång till Arduino/ATmega328P med nödvändig hårdvara (knappar, lysdiod, temperatursensor). 
 * Fungerande utvecklingsmiljö för att bygga och ladda upp kod till Arduino (Microchip Studio eller PlatformIO).
+
+***OBS!** Under lektionen finns en Arduino/ATmega328P (med nödvändig hårdvara) att låna.  
+Ta dock gärna med en egen för att inte behöva vänta på att få tillgång till hårdvara vid testmomenten.*
 
 ## Teori: Komponenttester vs SW/HW-integrationstester
 
@@ -36,7 +39,7 @@
 
 ### Förberedelser
 1. Se till att alla komponenttester från L07 går igenom.
-2. Kontrollera att er Arduino/ATmega328P är korrekt uppsatt med:
+2. Om ni tog med ett eget system, kontrollera att er Arduino/ATmega328P är korrekt uppsatt med:
    - Knappar anslutna till pin 12 - 13.
    - En lysdiod ansluten till pin 8.
    - En temperatursensor (TMP36) ansluten till analog pin A2.
@@ -107,7 +110,7 @@ Skapa ett testprotokoll där ni dokumenterar:
 ## Vanliga problem och lösningar
 
 ### Problem: Lysdioden blinkar inte med rätt hastighet
-* **Orsak**: Timer-konfiguration eller clock-hastighet.
+* **Orsak**: Timer-konfiguration eller klock-hastighet.
 * **Lösning**: Verifiera timer-prescaler och jämför med förväntad frekvens.
 
 ### Problem: Temperaturavläsning ger konstiga värden
