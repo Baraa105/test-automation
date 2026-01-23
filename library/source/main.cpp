@@ -141,16 +141,10 @@ int main()
     {
         serial.printf("Temperature prediction training succeeded!\n");
     }
-    else { serial.printf("Temperature prediction training failed!\n"; )}
+    else { serial.printf("Temperature prediction training failed!\n"); }
 
-<<<<<<< HEAD
-    // tempsensor::Smart tempSensor{tempSensorPin, adc, linReg};
-
-    //! @todo Replace the TMP36 temperature sensor with a smart sensor.
-=======
     // Initialize the smart temperature sensor.
     tempsensor::Smart tempSensor{tempSensorPin, adc, linReg};
->>>>>>> a108fd7ee5b893667e3d33805cf4699427f22260
 
     // Initialize the logic implementation with the given hardware.
     logic::Logic logic{led, 
