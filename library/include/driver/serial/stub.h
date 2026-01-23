@@ -4,6 +4,8 @@
 #pragma once
 
 #include <stdint.h>
+#include <vector> // LÄGG TILL DENNA
+#include <string> // LÄGG TILL DENNA
 
 #ifdef TESTSUITE
 #include <iostream>
@@ -12,7 +14,7 @@
 #include "container/vector.h"
 #include "driver/serial/interface.h"
 
-namespace driver
+namespace driver 
 {
 namespace serial
 {
@@ -24,13 +26,13 @@ class Stub final : public Interface
 public:
     /**
      * @brief Constructor.
-     * 
-     * @param[in] baudRate_bps The baud rate in bits per second (default = 9600 bps).
+     * * @param[in] baudRate_bps The baud rate in bits per second (default = 9600 bps).
      */
     explicit Stub(const uint32_t baudRate_bps = 9600U) noexcept
         : myReadBuffer{}
         , myBaudRate_bps{baudRate_bps}
         , myEnabled{true}
+        , myPrintedLines{} // Initiera listan
     {}
 
     /**
@@ -38,42 +40,35 @@ public:
      */
     ~Stub() noexcept override = default;
 
-    /** 
-     * @brief Get the baud rate of the serial device. 
-     * 
-     * @return The baud rate in bps (bits per second).
+    /** * @brief Get the baud rate of the serial device. 
+     * * @return The baud rate in bps (bits per second).
      */
     uint32_t baudRate_bps() const noexcept override { return myBaudRate_bps; }
 
     /**
      * @brief Check whether the serial device is initialized.
-     * 
-     * @return True if the device is initialized, false otherwise.
+     * * @return True if the device is initialized, false otherwise.
      */
     bool isInitialized() const noexcept override { return true; }
 
     /**
      * @brief Check whether the serial device is enabled.
-     * 
-     * @return True if the serial device is enabled, false otherwise.
+     * * @return True if the serial device is enabled, false otherwise.
      */
     bool isEnabled() const noexcept override { return myEnabled; }
 
     /**
      * @brief Set enablement of serial device.
-     * 
-     * @param[in] enable Indicate whether to enable the device.
+     * * @param[in] enable Indicate whether to enable the device.
      */
     void setEnabled(const bool enable) noexcept override { myEnabled = enable; }
     
     /**
      * @brief Read data from the serial port.
-     * 
-     * @param[out] buffer Read buffer.
+     * * @param[out] buffer Read buffer.
      * @param[in] size Buffer size in bytes.
      * @param[in] timeout_ms Read timeout. Pass 0 to wait indefinitely.
-     * 
-     * @return The number of read characters, or -1 on error.
+     * * @return The number of read characters, or -1 on error.
      */
     int16_t read(uint8_t* buffer, const uint16_t size, 
                  const uint16_t timeout_ms) const noexcept override
@@ -97,13 +92,18 @@ public:
 
     /**
      * @brief Print the given string in the serial terminal.
-     * 
-     * @param[in] str The string to print.
+     * * @param[in] str The string to print.
      */
     void print(const char* str) const noexcept override
     {
         // Print in the terminal when testing.
         if ((!myEnabled) || (NULL == str)) { return; }
+
+        // --- NY KOD HÄR ---
+        // Spara strängen i vår lista så att testet kan läsa den senare.
+        myPrintedLines.push_back(std::string(str));
+        // ------------------
+
         #ifdef TESTSUITE
              std::cout << str;
         #endif
@@ -116,8 +116,7 @@ public:
 
     /**
      * @brief Simulate received data by populating the read buffer.
-     * 
-     * @param[in] buffer Buffer containing the data to simulate.
+     * * @param[in] buffer Buffer containing the data to simulate.
      * @param[in] size Size of the buffer in bytes.
      */
     void setReadBuffer(const uint8_t* buffer, const uint16_t size) noexcept 
@@ -129,6 +128,25 @@ public:
         myReadBuffer.resize(size);
         for (uint16_t i{}; i < size; ++i) { myReadBuffer[i] = buffer[i]; }
     }
+
+    // --- NY FUNKTION HÄR ---
+    /**
+     * @brief Get the lines that have been printed via serial.
+     * @return A vector containing all printed strings.
+     */
+    const std::vector<std::string>& getPrintedLines() const noexcept 
+    {
+        return myPrintedLines;
+    }
+
+    /**
+     * @brief Clear the history of printed lines.
+     */
+    void clearPrintedLines() noexcept 
+    {
+        myPrintedLines.clear();
+    }
+    // -----------------------
 
     Stub(const Stub&)            = delete; // No copy constructor.
     Stub(Stub&&)                 = delete; // No move constructor.
@@ -144,6 +162,11 @@ private:
 
     /** Indicate whether serial transmission is enabled. */
     bool myEnabled;
+
+    /** * Buffer to store printed lines for test verification. 
+     * 'mutable' allows us to modify it even inside const functions like print().
+     */
+    mutable std::vector<std::string> myPrintedLines; 
 };
 } // namespace serial
 } // namespace driver
