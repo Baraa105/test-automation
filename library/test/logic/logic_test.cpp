@@ -20,7 +20,7 @@
 //! @todo Remove this #ifdef block once all stubs are implemented!
 
 
-#ifdef TESTSUITE
+//TESTSUITE
 
 namespace logic
 {
@@ -323,26 +323,88 @@ TEST(Logic, ToggleHandling)
 TEST(Logic, TempHandling)
 {
     // Create logic implementation and run the system.
-    
+    mock<1024> mock;
+    logic::Interface& logic{mock.createLogic()};
+    mock.runSystem();
+
+    mock.serial.clearPrintedLines();
+
     // Expect the temperature timer to be enabled at the start.
+    EXPECT_TRUE(mock.tempTimer.isEnabled());
+
 
     // Set the temperature to 25 degrees Celsius.
+    mock.tempSensor.setTemp(25);
 
     // Case 1 - Press the toggle button, simulate button event.
-    // Expect the temperature to not be printed, since the wrong button was pressed.
+    // Expect the temperature to not be printed, since the wrong button was pressed. 
+    //Don't forget to simulate the debounce timer timeout after the button event.
     {
-        //! @note Don't forget to simulate the debounce timer timeout after the button event.
+        mock.toggleButton.write(true);
+        logic.handleButtonEvent();
+
+        mock.debounceTimer.setTimedOut(true); 
+        logic.handleDebounceTimerTimeout(); 
+
+        mock.toggleButton.write(false);
+
+       for (const auto& line : mock.serial.getPrintedLines())
+        {
+            // npos betyder "hittades inte"
+            EXPECT_EQ(line.find("Temperature"), std::string::npos); 
+        }
     }
+    
 
     // Case 2 - Press the temperature button, simulate button event.
     // Expect the temperature to be printed once.
-    {
-        //! @note Don't forget to simulate the debounce timer timeout after the button event.
+    // Don't forget to simulate the debounce timer timeout after the button event.
+   {
+        mock.serial.clearPrintedLines(); 
+
+        mock.tempButton.write(true);
+        logic.handleButtonEvent();
+
+        mock.debounceTimer.setTimedOut(true); 
+        logic.handleDebounceTimerTimeout(); 
+
+        mock.tempButton.write(false);
+
+        
+        const auto& printedLines = mock.serial.getPrintedLines();
+        
+
+        ASSERT_EQ(printedLines.size(), 1); 
+
+        EXPECT_NE(printedLines[0].find("25 Celsius"), std::string::npos);
+        
+        
+        if (printedLines[0].find("25 Celsius") == std::string::npos) {
+            std::cout << "DEBUG: Fick strängen: '" << printedLines[0] << "'" << std::endl;
+        }
     }
 
     // Case 3 - Simulate temperature timer timeout.
     // Expect the temperature to be printed once more.
     {
+    
+        mock.serial.clearPrintedLines(); 
+
+        mock.tempTimer.setTimedOut(true);
+        logic.handleTempTimerTimeout();
+
+        
+        const auto& printedLines = mock.serial.getPrintedLines();
+        
+
+        ASSERT_EQ(printedLines.size(), 1); 
+
+        EXPECT_NE(printedLines[0].find("25 Celsius"), std::string::npos);
+        
+        
+        if (printedLines[0].find("25 Celsius") == std::string::npos) {
+            std::cout << "DEBUG: Fick strängen: '" << printedLines[0] << "'" << std::endl;
+        }
     }
 }
 
@@ -356,26 +418,39 @@ TEST(Logic, Eeprom)
     // Case 1 - Verify that the toggle timer is disabled at startup if its EEPROM bit is not set.
     // This simulates the timer being disabled before the last poweroff.
     {    
-        // Create logic implementation and run the system.
-
-        // Verify that the toggle timer is disabled after initialization.
+        mock<1024> mock;
+        
+        // Vi anropar funktionen för att starta logiken, men sparar inte referensen
+        // i en variabel eftersom vi inte använder den direkt i detta testet.
+        mock.createLogic(); 
+        
+        mock.runSystem();
+        
+        EXPECT_FALSE(mock.toggleTimer.isEnabled());
     }
 
     // Case 2 - Verify that the toggle timer is enabled at startup if its EEPROM bit is set.
     // This simulates the timer being enabled before the last poweroff.
     {    
-        // Mark the toggle timer to have been enabled before poweroff by setting the
-        // associated bit in EEPROM before creating the logic implementation.
-        
-        // Create logic implementation and run the system.
+        mock<1024> mock;
 
-        // Verify that the toggle timer was enabled during initialization.
+        // Vi använder adressen 0 direkt eftersom ToggleStateAddr är privat.
+        // 1U betyder "True" (påslagen).
+        mock.eeprom.write(0, 1U); 
+
+        // Initiera logiken (nu kommer den läsa 1 från EEPROM)
+        mock.createLogic();
+        
+        mock.runSystem();
+
+        // Nu ska timern vara igång!
+        EXPECT_TRUE(mock.toggleTimer.isEnabled());
     }
 }
 } // namespace
 } // namespace logic
 
-#endif /** TESTSUITE */
+ /** TESTSUITE */
 
 //! @todo Remove this #endif once all stubs are implemented!
  /** STUBS_IMPLEMENTED */
