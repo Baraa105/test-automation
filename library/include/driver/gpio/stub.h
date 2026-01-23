@@ -1,6 +1,6 @@
-//! @todo Add GPIO driver stub here!
+//! @todo Add GPIO driver Stub here!
 /**
- * @brief GPIO driver stub. 
+ * @brief GPIO driver Stub. 
  */
 #pragma once
 
@@ -14,19 +14,19 @@ namespace driver
 namespace gpio
 {
 /**
- * @brief GPIO driver stub.
+ * @brief GPIO driver Stub.
  * 
  *  this class is non-copuable and non-movable.
  */
-class stub final : public Interface
+class Stub final : public Interface
 {
 public:
 
     /** 
      * @brief Constructor.
      */
-        stub() noexcept
-        : myEnabled{false}
+        Stub() noexcept
+        : isEnabled{false}
         , myInitialized{true}
         , myInterruptEnabled{false}
     {}
@@ -54,7 +54,7 @@ public:
      */
      Direction direction() const noexcept override
     {
-        // the data is irrelevant for the stub, return input. 
+        // the data is irrelevant for the Stub, return input. 
          return Direction::Input; 
     }
 
@@ -63,7 +63,7 @@ public:
      * 
      * @return True if the input is high, false otherwise.
      */
-     bool read() const noexcept override { return myEnabled; }
+     bool read() const noexcept override { return isEnabled; }
 
     /**
      * @brief Write output to the GPIO.
@@ -76,7 +76,7 @@ public:
         // only update the GPIO enablmenet  state if the device is initialized.
          if (myInitialized)
          {
-             myEnabled = output;
+             isEnabled = output;
          }
      }
 
@@ -88,7 +88,7 @@ public:
             // only toggle the device if th device is initialized.
             if (myInitialized)
             {
-                myEnabled = !myEnabled; 
+                isEnabled = !isEnabled; 
             }
      }
 
@@ -134,10 +134,10 @@ public:
     { 
         myInitialized = initialized; 
 
-        // reset myEnabled and myInterruptEnabled if the device is uninitialized.
+        // reset isEnabled and myInterruptEnabled if the device is uninitialized.
         if (!myInitialized)
         {
-            myEnabled = false;
+            isEnabled = false;
             myInterruptEnabled = false;
         }
     }
@@ -160,7 +160,7 @@ public:
 private:
     //** GPIO enablement (true = high, false = low) */
 
-    bool myEnabled;
+    bool isEnabled;
 
     //**  GPIO Initialization state (trure = initialized) */
     bool myInitialized;
