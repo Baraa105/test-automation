@@ -101,6 +101,8 @@ void Logic::run(const bool& stop) noexcept
     { 
         // Regularly reset the watchdog to avoid system reset.
         myWatchdog.reset(); 
+        
+        readSerialPort();
     }
 }
 
@@ -203,4 +205,41 @@ void Logic::restoreToggleStateFromEeprom() noexcept
         mySerial.printf("Toggle timer enabled!\n");
     }
 }
+// -----------------------------------------------------------------------------
+bool Logic::readSerialPort() noexcept
+{
+    // Buffer size (bytes)
+    constexpr uint16_t bufferSize{5U};
+
+    // read timeout in ms
+    constexpr uint16_t readTimeout_ms{100U};
+
+    // Read buffer (to recevie data as bytes) 
+
+    uint8_t buffer[bufferSize]{};
+
+    // read the serial port, store received data in buffer
+    const int16_t bytesRead{mySerial.read(buffer, bufferSize, readTimeout_ms)};
+
+    // Check the return value, return false if the operation failed.
+    if (0 > bytesRead)
+    {
+        mySerial.printf("Failed to recevie data form the serial port!\n");
+        return false;
+    }
+
+    // handle comand if we received data
+    if (0 < bytesRead)
+    {
+        // placeholder: print the number of received bytes
+        mySerial.printf("Received %d bytes from the serial port!\n", bytesRead);
+
+        // print the recevied command.
+        const char cmd{static_cast<char>(buffer[0U])}; 
+        
+        mySerial.printf("Received command: %c\n", cmd);  
+    }
+    // Return true to indicate success.
+    return true; 
+} 
 } // namespace logic

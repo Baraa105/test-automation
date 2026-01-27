@@ -98,8 +98,8 @@ int main()
 {
     // Set pin numbers.
     constexpr uint8_t tempSensorPin{2U};
-    constexpr uint8_t ledPin{8U};
-    constexpr uint8_t toggleButtonPin{12U};
+    constexpr uint8_t ledPin{9U};			// ska vara pin 9 för min P1
+    constexpr uint8_t toggleButtonPin{8U};  // ska vara pin 8 för min P1
     constexpr uint8_t tempButtonPin{13U};
 
     // Set timeouts.
