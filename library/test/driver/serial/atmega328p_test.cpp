@@ -14,7 +14,6 @@
 
 #ifdef TESTSUITE
 
-//! @todo Implement tests according to project requirements.
 namespace driver
 {
 namespace
@@ -157,7 +156,7 @@ TEST(Serial_Atmega328p, Transmit)
     t3.join();
 }
 
-//! @todo Add more tests here!
+
 
 } // namespace
 } // namespace driver.

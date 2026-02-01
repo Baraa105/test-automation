@@ -152,14 +152,6 @@ TEST(Timer_Atmega328p, EnableDisable)
         EXPECT_FALSE(timer1.isEnabled());
         EXPECT_FALSE(timer2.isEnabled());
 
-    //! @note Once the above is working:
-    //!       Feel free to try all three timers. When enabling/disabling, feel free to check both
-    //!       that the isEnabled() methods returns the right value and that the associated bit
-    //!       in the timer mask register is set (see the source code).
-    //!       Feel free to add a function and pass the timer, the mask register and the mask bit
-    //!       to avoid writing the same code three times (or use a struct as was the case for
-    //!       the registers in the GPIO unit tests).
-
 }
 
 /**
@@ -273,7 +265,6 @@ TEST(Timer_Atmega328p, Restart)
         EXPECT_TRUE(callbackInvoked);
 }
 
-//! @todo Add more tests here (e.g., register verification, multiple timers running simultaneously).
 
 } // namespace
 } // namespace driver
