@@ -11,6 +11,7 @@
 
 #ifdef TESTSUITE
 
+
 namespace driver
 {
 namespace
@@ -54,6 +55,7 @@ TEST(Timer_Atmega328p, Initialization)
     //          hardware limitations.
 
     {
+
         // Create three timers with arbitrary timeouts.
         timer::Atmega328p timer0{100U};
         timer::Atmega328p timer1{50U};
@@ -66,6 +68,9 @@ TEST(Timer_Atmega328p, Initialization)
         
         timer::Atmega328p timer3{10U};
         EXPECT_FALSE(timer3.isInitialized()); // VERIFY THAT THE ADDITIONAL TIMER ISN'T INITIALIZED.
+
+
+  
     }
 
             // Verify that each timer is initialized.
@@ -268,5 +273,6 @@ TEST(Timer_Atmega328p, Restart)
 
 } // namespace
 } // namespace driver
+
 
 #endif /** TESTSUITE */
