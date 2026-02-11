@@ -136,6 +136,8 @@ void runOutputTest(const std::uint8_t id, GpioRegs& regs) noexcept
 // -----------------------------------------------------------------------------
 void runInputTest(const std::uint8_t id, GpioRegs& regs) noexcept
 {
+    //! @note Slutför dessa tester! Säg till om du behöver hjälp. :)
+
     // Get the physical pin on the given port.
 
     // Limit the scope of the GPIO instance.
@@ -167,6 +169,8 @@ TEST(Gpio_Atmega328p, Initialization)
     // Systematically test GPIO initialization across a range of pin numbers.
     for (std::uint8_t pin{}; pin < pinMax; ++pin)
     {
+        //! @note Samma som ovan.
+        
         // Create a new GPIO instance with the current pin number.
         // Example: gpio::Atmega328p gpio{pin, gpio::Direction::Output};
 
