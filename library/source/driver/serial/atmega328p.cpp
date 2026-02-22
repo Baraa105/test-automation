@@ -110,8 +110,7 @@ Atmega328p::Atmega328p() noexcept
     // Set the baud rate to 9600 kbps.
     UBRR0 = baudRateValue;
 
-    // Send carriage return to align the first message left.
-    UDR0 = CarriageReturn;
+   
 }
 
 // -----------------------------------------------------------------------------

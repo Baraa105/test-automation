@@ -135,14 +135,19 @@ Atmega328p::Atmega328p(const uint8_t pin, const Direction direction, void (*call
 }
 
 // -----------------------------------------------------------------------------
-Atmega328p::~Atmega328p() noexcept 
-{   
-    // Free resources used for the GPIO before deletion.
-    enableInterrupt(false);
-    utils::clear(myHw->ddrx, myPin);
-    utils::clear(myHw->portx, myPin);
-    utils::clear(myPinRegistry, myId);
-    myHw = nullptr; 
+Atmega328p::~Atmega328p() noexcept
+{
+    // Kollar om enheten faktiskt är initierad (så vi inte kraschar)
+    if (myHw != nullptr)
+    {
+        // Free resources used for the GPIO before deletion.
+        enableInterrupt(false);
+        utils::clear(myHw->ddrx, myPin);
+        utils::clear(myHw->portx, myPin);
+        utils::clear(myPinRegistry, myId);
+    }
+    
+    myHw = nullptr;
 }
 
 // -----------------------------------------------------------------------------
@@ -243,28 +248,32 @@ uint8_t Atmega328p::getPhysicalPin() const noexcept
 // -----------------------------------------------------------------------------
 bool Atmega328p::initHw() noexcept
 {
-    // Find the associated hardware, set up on success.
+    
     myHw = findHw(myIoPort);
     if (nullptr == myHw) { return false; }
 
-    // Mark the pin as reserved.
-    utils::set(myPinRegistry, myId); 
+    
+    utils::set(myPinRegistry, myId);
 
-    // Set data direction as specified.
+    
     switch (myDirection)
     {
-        // Enable the interupt pull-up resistor if specified.
+        
+        case Direction::Input:
         case Direction::InputPullup:
-             utils::set(myHw->portx, myPin);
-             break;
-        // Set the GPIO to output if specified.
+            utils::set(myHw->portx, myPin);
+            break;
+            
+        
         case Direction::Output:
             utils::set(myHw->ddrx, myPin);
             break;
-        // Do nothing as default - operate as tri-state input.
+            
+        
         default:
             break;
     }
+    
     return true;
 }
 
